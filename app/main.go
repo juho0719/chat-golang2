@@ -8,6 +8,8 @@ import (
 	"github.com/goincremental/negroni-sessions/cookiestore"
 	"github.com/julienschmidt/httprouter"
 	"github.com/unrolled/render"
+
+	"gopkg.in/mgo.v2"
 )
 
 const (
@@ -15,11 +17,21 @@ const (
 	sessionSecret = "simple_chat_session_secret"
 )
 
-var renderer *render.Render
+var (
+	renderer *render.Render
+	mongoSession *mgo.Session
+)
 
 func init()  {
 	//create renderer
 	renderer = render.New()
+
+	s, err := mgo.Dial("mongodb://localhost")
+	if err != nil {
+		panic(err)
+	}
+
+	mongoSession = s
 }
 
 func main()  {
